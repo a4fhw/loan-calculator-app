@@ -1,5 +1,6 @@
 
 module.exports = {
+  riskEvalEnabled: false,
   interestRate: 10,
   quickRiskTimer: 30000,
   highRiskTimer: 60000,

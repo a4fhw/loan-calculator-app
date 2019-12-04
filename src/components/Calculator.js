@@ -24,10 +24,12 @@ export class Calculator extends React.Component {
   };
 
   componentDidMount() {
-    const { quickRiskTimer, highRiskTimer } = process.env;
+    const { riskEvalEnabled, quickRiskTimer, highRiskTimer } = process.env;
 
-    setTimeout(this.endRiskTime(), quickRiskTimer);
-    setInterval(this.resetLoanCount(), highRiskTimer);
+    if (riskEvalEnabled) {
+      setTimeout(this.endRiskTime(), quickRiskTimer);
+      setInterval(this.resetLoanCount(), highRiskTimer);
+    }
   }
 
   endRiskTime = () => {
@@ -134,12 +136,13 @@ export class Calculator extends React.Component {
     } = this.state;
 
     const {
+      riskEvalEnabled,
       label,
       interestRate,
       maxLoanAmount
     } = process.env;
 
-    if (recentLoanCount === 3 || (highRisk && parseFloat(loanAmount) === maxLoanAmount)) {
+    if (riskEvalEnabled && (recentLoanCount === 3 || (highRisk && parseFloat(loanAmount) === maxLoanAmount))) {
       this.setState({
         displayMessage: true,
         messageTitle: label.common.refuseLoanTitle,
@@ -152,7 +155,7 @@ export class Calculator extends React.Component {
       id: Math.random(),
       loanDate: loanDate.valueOf(),
       loanDayCount,
-      loanAmount,
+      loanAmount: parseFloat(loanAmount),
       totalAmount: this.calculateTotalAmount(loanAmount, loanDayCount),
       interestRate: interestRate,
       extended: false,

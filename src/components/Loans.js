@@ -14,15 +14,15 @@ export class Loans extends React.PureComponent {
     loanItem.history.push(Object.assign({}, loanItem));
     loanItem.interestRate *= 1.5;
 
-    const amount = Number(loanItem.loanAmount);
-    const dailyIncrease = Number(amount * ((loanItem.interestRate) / 100));
-    
-    let totalAmount = Number(loanItem.totalAmount);
+    const amount = loanItem.loanAmount;
+    const dailyIncrease = amount * ((loanItem.interestRate) / 100);
+
+    let totalAmount = loanItem.totalAmount;
 
     totalAmount += dailyIncrease * extensionDays;
     loanItem.loanDate = moment(loanItem.loanDate).add(extensionDays, 'days').valueOf();
     loanItem.loanDayCount += extensionDays;
-    loanItem.totalAmount = totalAmount.toFixed(2);
+    loanItem.totalAmount = totalAmount;
     loanItem.extended = true;
     loanActions.extendLoan(loanItem);
   }
@@ -34,7 +34,7 @@ export class Loans extends React.PureComponent {
     return (
       <div className="col-sm-7 module-container">
         <div className="dashboard-module">
-          <h2>{label.loans.loansTitle}</h2> 
+          <h2>{label.loans.loansTitle}</h2>
           {items.length > 0 ?
             <div>
               {items.map(item => (
@@ -46,7 +46,7 @@ export class Loans extends React.PureComponent {
                       header={item.loanAmount + ' € (' + moment(oldLoan.loanDate).format(format.dateExtended) + ') - extended by ' + extensionDays + ' days'}
                     >
                       <div className="col-sm-12">
-                        <p>{label.loans.repayableAmount}: {oldLoan.totalAmount} €</p>
+                        <p>{label.loans.repayableAmount}: {oldLoan.totalAmount.toFixed(2)} €</p>
                         <p>{label.loans.loanDayCount} {oldLoan.loanDayCount} days</p>
                         <p>{label.loans.extensionInterest}: {oldLoan.interestRate}%</p>
                       </div>
@@ -57,7 +57,7 @@ export class Loans extends React.PureComponent {
                     bsStyle="primary"
                   >
                     <div className="col-sm-9">
-                      <p>{label.loans.repayableAmount}: {item.totalAmount} €</p>
+                      <p>{label.loans.repayableAmount}: {item.totalAmount.toFixed(2)} €</p>
                       <p>{label.loans.loanedDays} {item.loanDayCount} days</p>
                       <p>{item.extended ? label.loans.extensionInterest : label.loans.interest} : {item.interestRate}%</p>
                     </div>
